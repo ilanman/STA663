@@ -7,15 +7,23 @@ Website:  https://github.com/ilanman/STA663
 Date:     April 6, 2016
 <br>
 <br>
-<h2>1. Introduction</h2>
+<h3>1. Introduction</h3>
 
-<h2>2. MCMC review</h2>
+<h3>2. MCMC review</h3>
+<h4>2a. Motivation</h4>
+<h4>2b. Example: Gibbs Sampling</h4>
+<h4>2c. Shortcomings</h4>
 
-<h2>3. Hamiltonian Dynamics</h2>
+<h3>3. Hamiltonian Dynamics</h3>
 
-<h2>4. MCMC from Hamiltonian dynamics</h2>
+<h3>4. MCMC from Hamiltonian dynamics</h3>
+<h4>4a. Probability and the Hamiltonian</h4>
+<h4>4b. Hamiltonian Monte Carlo Algorithm</h4>
 
-<h2>5. Empirical Comparisons</h2>
+<h3>5. Empirical Comparisons</h3>
+<h4>5a. Data set</h4>
+<h4>5b. Comparisons against other MCMC methods</h4>
 
-<h2>6. Conclusion</h2>
+<h3>6. Conclusion</h3>
 
+<h3>7. References</h3>
