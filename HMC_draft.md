@@ -9,19 +9,19 @@ Date:     April 6, 2016
 <br>
 <h3>1. Introduction</h3>
 
-Hamiltonian Monte Carlo is a novel approach to Posterior estimation. It improves on the "simple random-walk" proposal of the Metropolis algorithm, by ensuring that these proposals are in the direction of steepest ascent. In doing so, we avoid the slow exploration of the state space from these seemingly "random" proposals. HMC reduces the correlation between successive sampled states by using Hamiltonian evolution between states, a concept derived from quantum mechanics. The energy preserving aspect of Hamiltonian dynamics will be extremely useful in our derivation and implementation of this algorithm.
+Hamiltonian Monte Carlo is a novel approach to Posterior estimation. It improves on the simple random-walk proposal of the Metropolis algorithm, by ensuring that these proposals are in the direction of steepest ascent (reference). In doing so, we avoid the slow exploration of the state space from these random proposals. HMC reduces the correlation between successive sampled states by using Hamiltonian evolution between states, a concept derived from quantum mechanics. The energy preserving aspect of Hamiltonian dynamics will be extremely useful in our derivation and implementation of this algorithm.
 
 <h3>2. MCMC review</h3>
 
-Markov Chain Monte Carlo methods are a class of algorithms for sampling from a proabability distribution based on constructing a Markov Chain. In Bayesian Inference, these methods are useful with regards to the posterior distribution, for which we hope to obtain a rough estimate of the parameters in question.
+Markov Chain Monte Carlo methods are a class of algorithms for sampling from a proabability distribution based on constructing a Markov Chain. In Bayesian Inference, we obtain estimates for model parameters by sampling from the posterior distribution. MCMC methods are used extensively in calculating posterior distributions, which are often complex and intractable, and therefore must be approximated numerically. MCMC algorithms have certain attractive properties such as convergence to a limiting distribution, which we exploit in solving Bayesian Inference problems.
 
 <h4>2a. Motivation</h4>
 
-In the case of Heirarchical Bayesian Models, we often find the posterior distribution to be comprised of several parameters and is often intractable to solve for the parameters. Solving for these parameters of interest gives us insight into how the data influences our model, and we can make probabilistic inferences and predictions.
+In the case of Heirarchical Bayesian Models, we often find the posterior distribution to be comprised of several parameters and is often intractable to solve. Even when tractable, we may find ourselves having to compute several complex integrals which require massive amounts of computing time. In real-world applications, practitioners commonly use MCMC methods to solve for these parameters. There are many flavors of MCMC and the modeler should identify which one to use in which case.
 
 <h4>2b. Example: Gibbs Sampling</h4>
 
-Gibbs sampling is a specific variant of MCMC where each parameter of interest can be sampled directly, when conditioned across all the other parameters. This algorithm generates an instance from the distribution of each variable in turn, conditional on the current values of the other variables. This sequence of samples constitues a Markov Chain, and the stationary distribution of this Markov Chain is the sought-after joint distribution.
+Gibbs sampling is a specific variant of MCMC where each parameter of interest can be sampled directly, when conditioned across all the other parameters. This algorithm generates an instance from the distribution of each variable in turn, conditional on the current values of the other variables. This sequence of samples constitutes a Markov Chain whose stationary distribution is the sought-after joint distribution.
 
 <h5> Gibbs Sampling Pseudo-Code </h5>
 
@@ -35,11 +35,11 @@ Gibbs sampling is a specific variant of MCMC where each parameter of interest ca
 
 <h5> Shortcomings</h5>
 
-The main shortcoming of Gibbs Sampling is the successive autocorrelation of the samples. Due to the fact that the sampling generates a Markov Chain, successive samples and not independent of each other. "Thinning" and "Block Sampling" may help reduce this correlation, but is important to keep this correlation in mind. 
+The main shortcoming of Gibbs Sampling is the successive autocorrelation of the samples. Due to the fact that the sampling generates a Markov Chain, successive samples are correlated with each other. "Thinning" and "Block Sampling" may help reduce this correlation, but these heuristics sometimes don't work well or require lots of data. Another shortfall specific to Gibbs Sampling is that it requires identifying conditional distributions for each parameter. As with the posterior, some of these conditional distributions may have complex, intractable forms and will need other MCMC methods to compute them.
 
 <h4>2b. Example: Metropolis-Hastings </h4>
 
-The Metropolis algorithm is a generalization of Gibbs Sampling, useful when you cannot compute conditional sampling distributions in closed form. At each iteration of this algorithm, we pick a "candidate" for the next sample value of the parameter in question based on the current sample value. We usually use a Normal Random walk method. Then, with some probabilitym the candidate is either accepted (in which case its value is used in the next iteration) or rejected (in which case it is discarted, and the current value is re-used in the next iteration). The probability of acceptance is the ratio of the Posterior distribution with the proposed parameter over the distribution with the previous parameter.
+The Metropolis algorithm is a generalization of Gibbs Sampling, useful when you cannot compute conditional sampling distributions in closed form. At each iteration of this algorithm, we propose a *candidate* for the next sample value of the parameter in question. The most common proposal method is a simple random walk, i.e. we sample from a Standard Normal Distribution. Then, with probability $/alpha$ the candidate is either accepted (updating our chain's next value with the candidate) or rejected (making the chain's next value equal to the current). $/alpha$ is the ratio of the posterior distribution with the proposed parameter over the posterior distribution with the previous parameter, truncated to 1.
 
 <h5> Metropolis-Hastings Pseudo-Code </h5>
 
@@ -54,10 +54,9 @@ The Metropolis algorithm is a generalization of Gibbs Sampling, useful when you 
     i. if u $\leq \alpha$ accept the proposal state $x^*$ and set $x^{(t)}=x^*$
     ii. else set $x^{(t)} = x^{(t-1)}$
 
-
 <h5> Shortcomings</h5>
 
-The main shortcoming of the Metropolis Algorithm is that is explores the posterior space very slowly. This is due to the "random walk" behavior of the proposals. As we will see shortly, this makes the algorithm inefficient and requires a lot of computation to accurately estimate the parameters, though you may do with higher variance than desired.
+The main shortcoming of the Metropolis Algorithm is that it explores the posterior space very slowly. This is due to the random walk behavior of the proposals. This makes the algorithm inefficient and requires a lot of computation to accurately estimate low-variance parameters.
 
 <h3>3. Hamiltonian Dynamics</h3>
 
