@@ -60,15 +60,20 @@ The main shortcoming of the Metropolis Algorithm is that it explores the posteri
 
 <h3>3. Hamiltonian Dynamics</h3>
 
-Before we can develop Hamiltonian Monte Carlo, we must become familiar with the concept of Hamiltonian dynamics. Hamiltonian dymanics describes an object's motion in terms of its location $x$ and momentum $p$. We remember from High School physics that momentum $p$ is equal to an object's mass $m$ times its velocity $v$. For each location an object takes, there is an associated potential energy $U(x)$, and for each momentum there is an associated kineric energy $K(p)$. The total energy of the system is **constant** and is known as the Hamiltonian $H(x,p)$, defined as:
+Before we can develop Hamiltonian Monte Carlo, we must become familiar with the concept of Hamiltonian dynamics. Hamiltonian dymanics describes an object's motion in terms of its location $x$ and momentum $p$. Recall from high school physics that momentum $p$ is equal to an object's mass $m$ times its velocity $v$. For each location an object takes, there is an associated potential energy $U(x)$, and for each momentum there is an associated kineric energy $K(p)$. The total energy of the system is **constant** and is known as the Hamiltonian $H(x,p)$, defined as:
 
 $H(x,p) = U(x) + K(p)$
 
-We want to apply Hamiltonian Dynamics, which describes an object's motion in time, to more general cases. In order to simulate these dynamics numerically, it is necessary to approximate Hamiltonian equations by discretizing time. This is done by splitting up the interval T into a series of smaller intervals of length $\delta$. The smaller the value of $\delta$ the closer the approximation is to the dynamics in continuous time.
+This description is implemented quantitatively via a set of differential equations known as the Hamiltonian equations:
+
+$\frac{\partial x_i}{\partial t} = \frac{\partial H}{\partial p_i} = \frac{\partial K(\bf{p})}{\partial p_i}$
+$\frac{\partial p_i}{\partial t} = -\frac{\partial H}{\partial x_i} = -\frac{\partial U(\bf{x})}{\partial x_i}$
+
+If we can solve for these partial derivatives, we can apply Hamiltonian Dynamics to more general cases. In order to simulate these dynamics numerically for computation, it is necessary to approximate the Hamiltonian equations by discretizing time. This is done by splitting up the interval $T$ into a series of smaller intervals of length $\delta$. The smaller the value of $\delta$ the closer the approximation is to the dynamics in continuous time, but the more computationally expensive is the procedure.
 
 <h4>3a The Leap Frog Method </h4>
 
-The Leap Frog Method updates the momentum and position variables sequentially, starting by simulating the momentum dynamics over a small interval of time $\delta$/2, then simulating the position dynamics over a slightly longer interval in time $\delta$, then completing the momentum simulation over another small interval of time $\delta$/2 so that x and p now exist at the same point in time. Specifically:
+The Leap Frog Method is a popular method for numerically integrating differential equations, such as the Hamiltonian equations. The method updates the momentum and position variables sequentially, starting by simulating the momentum dynamics over a small interval of time $\frac{\delta}{2}$, then simulating the position dynamics over a slightly longer interval in time $\delta$, then completing the momentum simulation over another small interval of time $\frac{\delta}{2}$ so that x and p now exist at the same point in time. Specifically:
 
 1. Take a half step in time to update the momentum variable:
 
@@ -82,7 +87,7 @@ $x_i(t + \delta) = x_i(t) + \delta \frac{\partial K}{\partial p_i(t + \delta/2)}
 
 $p_i(t + \delta) = p_i(t + \delta/2) - (\delta/2) \frac{\partial U}{\partial x_i(t+\delta)}$
 
-This method can be run for L steps to simulate dynamics over L x $\delta$ units of time. This particular method preserves the energy of the system, and thus it is a popular choice for numerical approximations, especially in comparison with Euler's method:
+This method can be run for L steps to simulate dynamics over L x $\delta$ units of time. This particular method preserves the energy of the system and is time-reversible, and thus it is a popular choice for numerical approximations, especially in comparison with Euler's method:
 
 PUT PLOT OF EULER VS LEAPFROG FROM NEAL PAPER!!
 
